@@ -1,5 +1,11 @@
 # ArduinoRover
 Arduino Rover and Joystick
+- The camera auto-centers on start
+- Motors are controlled via the left Joystick
+- The rover will scan ahead, and if there is an obstacle in less than 8 cm it will stop (and beep). You can still force-move by pressing the left joystick button and moving forward
+- The right joystick controls the camera
+- Pressing the on right joystick button will auto-center the camera
+- Videos: https://www.youtube.com/watch?v=ml7O4jkn1Jc&list=PLNsnBmVpuum4KI6UUOaWc9fDglg-BjKYW
 
 # Parts:
 
@@ -20,6 +26,13 @@ Arduino Rover and Joystick
 - - NRF24L01 antena
 - - Two PS2 joysticks
 - - Battery (from 3 to 12V)
+
+- FTP camera:
+- - You can add standard FTP camera to the Rover
+- - Here is what I use:
+- - - Camera: https://www.banggood.com/Camera-Frame-Mount-For-Eachine-TX01-TX02-FPV-Camera-E010-E010C-E010S-Blade-Inductrix-Tiny-Whoop-p-1116154.html?rmmds=myorder&ID=224&cur_warehouse=CN
+- - - Receiver: https://www.banggood.com/Eachine-R051-150CH-5_8G-FPV-AV-Recevier-Build-in-Bat-For-iPhone-Android-IOS-Smartphone-Mobile-Tablet-p-1196214.html?rmmds=myorder&cur_warehouse=CN
+- - This way I can look through the camera using my phone while driving the rover
 
 # Connecting the parts:
 
