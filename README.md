@@ -6,6 +6,9 @@ Arduino Rover and Joystick
 - The right joystick controls the camera
 - Pressing the on right joystick button will auto-center the camera
 - Videos: https://www.youtube.com/watch?v=ml7O4jkn1Jc&list=PLNsnBmVpuum4KI6UUOaWc9fDglg-BjKYW
+- Check the Parts list for the needed parts
+- Check the "Connecting the parts" to assemble
+- Upload the code to the Arduinos from the "RoverCode.txt" and the "TransmitterCode.txt" files
 
 # Parts:
 
