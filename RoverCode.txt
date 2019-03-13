@@ -1,0 +1,313 @@
+#include <SPI.h>
+#include <nRF24L01.h>
+#include <RF24.h>
+#include <Servo.h>
+Servo ServoDown; 
+Servo ServoUp; 
+//#include <Servo.h>
+//Servo Servo1; 
+/*
+NRF24L01 antena:
+- SCK -> 52
+- M0 -> 51
+- M1 -> 50
+- CSN -> 8
+- CE -> 7
+.
+  const int leftFwd = 6;
+  const int leftBack = 9;
+  const int rightFwd = 4;
+  const int rightBack = 5;
+.
+voltage -> A0
+.
+beep -> pin 3
+.
+Camera motors:
+  const int camDown = 36;
+  const int camUp = 37;
+  const int camLeft = 42;
+  const int camRight = 43;
+!!! LOW = action || HIGH = STOP !!!
+Very little action = delay(10)
+*/
+
+RF24 radio(7, 8); // CE, CSN
+const byte addresses[][6] = {"00001", "00002"};
+int matrix[8];
+
+  // Distance sensor variables:
+  long duration;
+  int distance;
+
+  const int led = 3; // led and buzz
+  const int servoPinDown = 30; // lower
+  const int servoPinUp = 32; // upper
+  const int trigPin = 40;
+  const int echoPin = 38;  
+  const int leftFwd = 9;
+  const int leftBack = 6;
+  const int rightFwd = 5;
+  const int rightBack = 4;
+  
+  // Values for the servo:
+  int servoDownValue = 90;
+  int servoUpValue = 150;
+  
+void setup() {
+  Serial.begin(9600);
+  pinMode(A0, INPUT);
+  pinMode(led, OUTPUT); 
+  pinMode(leftFwd, OUTPUT); 
+  pinMode(rightBack, OUTPUT);
+  pinMode(rightFwd, OUTPUT); 
+  pinMode(leftBack, OUTPUT);
+  // Distance:
+  pinMode(trigPin, OUTPUT);
+  pinMode(echoPin, INPUT);
+  
+// Radio:
+  radio.begin();
+  radio.openWritingPipe(addresses[0]); // 00002
+  radio.openReadingPipe(1, addresses[1]); // 00001
+  radio.setPALevel(RF24_PA_MIN);
+
+// Attach servos to the used pin number and level them:
+  ServoDown.attach(servoPinDown); 
+  ServoDown.write(servoDownValue);
+  delay(500);
+  ServoUp.attach(servoPinUp);
+  ServoUp.write(servoUpValue);
+  delay(500);
+
+// Confirmation beep:
+  digitalWrite(led, 1);
+  delay(100);
+  digitalWrite(led, 0);
+  delay(100);
+  digitalWrite(led, 1);
+  delay(100);
+  digitalWrite(led, 0);
+}
+
+
+
+
+void loop() {
+  radio.startListening();
+  if ( radio.available()) {
+    while (radio.available()) {
+      radio.read(&matrix, sizeof(matrix));
+      // Display matrix:
+      int i = 0;
+      while( i < 8){
+        //Serial.println(matrix[i]);
+        i++;
+      }
+      
+  /* The matrix meaning:
+  matrix[0] = Button_left_state;
+  matrix[1] = SW_left_state;
+  matrix[2] = Button_right_state;
+  matrix[3] = SW_right_state;
+  matrix[4] = analogRead(VRX_left);
+  matrix[5] = analogRead(VRY_left);
+  matrix[6] = analogRead(VRX_right);
+  matrix[7] = analogRead(VRY_right);
+  */
+  
+      // Motors:
+      if (matrix[4] > 700){motors_backwards();}
+      else if (matrix[4] < 300){
+        if(matrix[1] == 1){motors_forwards_forced();}
+        else {motors_forward_scan();}
+      }
+      else if (matrix[5] > 700){motors_left();}
+      else if (matrix[5] < 300){motors_right();}
+      else {motors_stop();}
+      
+      
+      // Camera:
+      // -- Reset:
+      if(matrix[3] == 0){
+        servo_reset();
+      }
+      // -- Up/Down
+      if(matrix[6] < 400){
+        if (matrix[6] < 100)     {servoUpValue = servoUpValue + 10;}
+        else if (matrix[6] < 200){servoUpValue = servoUpValue + 6;}
+        else if (matrix[6] < 300){servoUpValue = servoUpValue + 3;}
+        else                     {servoUpValue = servoUpValue + 1;}
+        if (servoUpValue > 180){servoUpValue = 180;};
+        ServoUp.write(servoUpValue);
+        delay(10);
+      }
+      else if(matrix[6] > 600){
+        if (matrix[6] > 900)     {servoUpValue = servoUpValue - 10;}
+        else if (matrix[6] > 800){servoUpValue = servoUpValue - 6;}
+        else if (matrix[6] > 700){servoUpValue = servoUpValue - 3;}
+        else                     {servoUpValue = servoUpValue - 1;}
+        if (servoUpValue < 0){servoUpValue = 0;};
+        ServoUp.write(servoUpValue);
+        delay(10);
+      }
+      // -- Left/Right:
+      if(matrix[7] < 400){
+        if (matrix[7] < 100)     {servoDownValue = servoDownValue - 10;}
+        else if (matrix[7] < 200){servoDownValue = servoDownValue - 6;}
+        else if (matrix[7] < 300){servoDownValue = servoDownValue - 3;}
+        else                     {servoDownValue = servoDownValue - 1;}
+        if (servoDownValue > 180){servoDownValue = 180;};
+        ServoDown.write(servoDownValue);
+        delay(10);
+      }
+      else if(matrix[7] > 600){
+        if (matrix[7] > 900)     {servoDownValue = servoDownValue + 10;}
+        else if (matrix[7] > 800){servoDownValue = servoDownValue + 6;}
+        else if (matrix[7] > 700){servoDownValue = servoDownValue + 3;}
+        else                     {servoDownValue = servoDownValue + 1;}
+        if (servoDownValue < 0){servoDownValue = 0;};
+        ServoDown.write(servoDownValue);
+        delay(10);
+      }
+
+      
+    }
+  }
+}
+
+void servo_reset(){
+  ServoDown.write(90);
+  delay(250);
+  ServoUp.write(150);
+  digitalWrite(led, 1);
+  delay(100);
+  digitalWrite(led, 0);
+  delay(250);
+}
+
+
+
+
+void motors_left(){
+  digitalWrite(leftFwd, HIGH);
+  digitalWrite(rightFwd, LOW);
+  digitalWrite(leftBack, LOW);
+  digitalWrite(rightBack, HIGH);
+}
+void motors_right(){
+  digitalWrite(leftFwd, LOW);
+  digitalWrite(rightFwd, HIGH);
+  digitalWrite(leftBack, HIGH);
+  digitalWrite(rightBack, LOW);
+}
+void motors_forwards_forced(){
+  digitalWrite(leftFwd, LOW);
+  digitalWrite(rightFwd, LOW);
+  digitalWrite(leftBack, HIGH);
+  digitalWrite(rightBack, HIGH);
+}
+void motors_backwards(){
+  digitalWrite(leftFwd, HIGH);
+  digitalWrite(rightFwd, HIGH);
+  digitalWrite(leftBack, LOW);
+  digitalWrite(rightBack, LOW);
+}
+void motors_forward_scan(){
+  measureDistance();
+  Serial.print("Distance: ");
+  Serial.println(distance);
+  if ( distance >= 8 ){
+    digitalWrite(leftFwd, LOW);
+    digitalWrite(rightFwd, LOW);
+    digitalWrite(leftBack, HIGH);
+    digitalWrite(rightBack, HIGH);
+  }
+  else{
+    digitalWrite(leftFwd, LOW);
+    digitalWrite(rightFwd, LOW);
+    digitalWrite(leftBack, LOW);
+    digitalWrite(rightBack, LOW); 
+    digitalWrite(led, 1);
+    delay(75);
+    digitalWrite(led, 0);
+    delay(50);
+    digitalWrite(led, 1);
+    delay(75);
+    digitalWrite(led, 0);
+    delay(50);
+  }
+}
+
+void motors_stop(){
+  digitalWrite(leftFwd, LOW);
+  digitalWrite(rightFwd, LOW);
+  digitalWrite(leftBack, LOW);
+  digitalWrite(rightBack, LOW); 
+}
+
+
+
+
+void measureDistance(){
+  // Clears the trigPin
+  digitalWrite(trigPin, LOW);
+  delayMicroseconds(2);
+  // Sets the trigPin on HIGH state for 10 micro seconds
+  digitalWrite(trigPin, HIGH);
+  delayMicroseconds(10);
+  digitalWrite(trigPin, LOW);
+  // Reads the echoPin, returns the sound wave travel time in microseconds
+  duration = pulseIn(echoPin, HIGH);
+  // Calculating the distance
+  distance= duration*0.034/2;
+  // Prints the distance on the Serial Monitor
+  // Serial.print("Distance: ");
+  // Serial.println(distance);
+}
+
+
+
+// VOLTAGE READER:
+void readVolt(){
+  int sensorValue = analogRead(A0);
+  // Convert the analog reading (which goes from 0 - 1023) to a voltage (0 - 5V):
+  float voltage = sensorValue * (5.0 / 1023.0);
+  // print out the value you read:
+  Serial.print("Volts = ");
+  Serial.println(voltage);
+  delay(1000);
+  if (voltage < 3.6){
+    digitalWrite(led, 1);
+    delay(1000);
+    digitalWrite(led, 0);
+  }
+  
+  else if (voltage < 3.8){
+    digitalWrite(led, 1);
+    delay(100);
+    digitalWrite(led, 0);
+    delay(100);
+    digitalWrite(led, 1);
+    delay(100);
+    digitalWrite(led, 0);
+    delay(100);
+    digitalWrite(led, 1);
+    delay(100);
+    digitalWrite(led, 0);
+  }
+  else if (voltage < 4){
+    digitalWrite(led, 1);
+    delay(100);
+    digitalWrite(led, 0);
+    delay(100);
+    digitalWrite(led, 1);
+    delay(100);
+    digitalWrite(led, 0);
+  }
+  else if(voltage >= 4){
+    digitalWrite(led, 1);
+    delay(100);
+    digitalWrite(led, 0);
+  }
+}

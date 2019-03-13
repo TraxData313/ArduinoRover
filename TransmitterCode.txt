@@ -1,0 +1,82 @@
+
+#include <SPI.h>
+#include <nRF24L01.h>
+#include <RF24.h>
+/*
+NRF24L01 antena:
+- SCK -> 13
+- M0 -> 11
+- M1 -> 12
+- CSN -> 8
+- CE -> 7
+*/
+
+RF24 radio(7, 8); // CE, CSN
+const byte addresses[][6] = {"00001", "00002"};
+
+// Joystick and button connections:
+// - Left Side:
+const int Button_left = 5;
+// -- Joystick left:
+const int SW_left = 3;
+const int VRY_left = 3; //A3
+const int VRX_left = 2; //A2
+// - Right Side:
+const int Button_right = 6;
+// -- Joystick right:
+const int SW_right = 4;
+const int VRY_right = 1; //A1
+const int VRX_right = 0; //A0
+bool Button_left_state = 0;
+bool SW_left_state = 0;
+bool Button_right_state = 0;
+bool SW_right_state = 0;
+
+int matrix[8];
+
+
+void setup() {
+  Serial.begin(9600);
+  pinMode(Button_left, INPUT); 
+  pinMode(SW_left, INPUT);
+  digitalWrite(SW_left, HIGH);   // !!! Has to start HIGH to work
+  pinMode(Button_right, INPUT); 
+  pinMode(SW_right, INPUT); 
+  digitalWrite(SW_right, HIGH);  // !!! Has to start HIGH to work
+  radio.begin();
+  radio.openWritingPipe(addresses[1]); // 00001
+  radio.openReadingPipe(1, addresses[0]); // 00002
+  radio.setPALevel(RF24_PA_MIN);
+}
+
+
+
+void loop() {
+  // Check and display the state:
+  Serial.println("");
+  Serial.println("State:");
+  Button_left_state = digitalRead(Button_left);
+  SW_left_state = digitalRead(SW_left);     // By default/unpressed its 1 !!!
+  Button_right_state = digitalRead(Button_right);
+  SW_right_state = digitalRead(SW_right);   // By default/unpressed its 1 !!!
+  matrix[0] = Button_left_state;
+  matrix[1] = SW_left_state;
+  matrix[2] = Button_right_state;
+  matrix[3] = SW_right_state;
+  matrix[4] = analogRead(VRX_left);
+  matrix[5] = analogRead(VRY_left);
+  matrix[6] = analogRead(VRX_right);
+  matrix[7] = analogRead(VRY_right);
+  int i = 0;
+  while( i < 8){
+    Serial.println(matrix[i]);
+    i++;
+  }
+  
+  // Transmit the state:
+  Serial.println("---Transmitting state...");
+  radio.write(&matrix, sizeof(matrix));
+  Serial.println("---Done!");
+  
+  delay(5);
+}
