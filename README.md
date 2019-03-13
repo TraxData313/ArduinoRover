@@ -94,3 +94,5 @@ Arduino Rover and Joystick
 - - - Right Joystick VRY to Arduino PIN A1
 - - - Right Joystick SW to Arduino PIN 4
 
+
+- Contact = antongeorgiev313@gmail.com
