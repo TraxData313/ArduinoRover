@@ -2,6 +2,7 @@
 Arduino Rover and Joystick
 
 # Parts:
+
 - For the Rover:
 - - Arduino Mega
 - - Chassis with two motors
@@ -12,16 +13,16 @@ Arduino Rover and Joystick
 - - Two SG90 Micro Servo Motors
 - - Camera Mount Platform
 - - Battery (from 3 to 12V)
+
 - For the transmitter:
 - - Arduino Uno
 - - MB102 Breadboard
 - - NRF24L01 antena
 - - Two PS2 joysticks
-- - Two 4-legged buttons
-- - Two resistors (from 100 to 300 Ohms each)
 - - Battery (from 3 to 12V)
 
 # Connecting the parts:
+
 - Rover:
 - - Motors to H-Bridge:
 - - - Connect the two motors to the motor pins on the L298N H Bridge
@@ -43,12 +44,37 @@ Arduino Rover and Joystick
 - - - M1 to Arduino PIN 50
 - - - CSN to Arduino PIN 8
 - - - CE to Arduino PIN 7
-- - Piezo Buzzer:
-- - - Buzzer(+) to Arduino PIN 3
-- - - Buzzer(-) to Arduino GND
 - - Ultrasonic Module HC-SR04:
 - - - Module TrigPin to Arduino PIN 40
 - - - Module EchoPin to Arduino PIN 38
 - - - Module VCC Pin to Arduino 5V
 - - - Module GND Pin to Arduino GND
-- - L298N H Bridge to Arduino
+- - Piezo Buzzer:
+- - - Buzzer(+) to Arduino PIN 3
+- - - Buzzer(-) to Arduino GND
+- - Servo Motors:
+- - - Attach the servos to the stand like this: https://github.com/TraxData313/ArduinoRover/blob/master/CameraStand.PNG
+- - - Connect the servo's (+)'s to the Arduino 5V
+- - - Connect the servo's (-)'s to the Arduino GND
+- - - Connect the Bottom Servo signal PIN to Arduino PIN 30
+- - - Connect the Top Servo signal PIN to Arduino PIN 32
+
+- Transmitter:
+- - Glue the Arduino, the antena and the Joysticks to the Breadboard to desired positions
+- - - Here is how mine are glued: https://github.com/TraxData313/ArduinoRover/blob/master/JoystickView.JPG (disregard the buttons, two additional buttons, they are not used with this rover)
+- - NRF24L01 antena
+- - - SCK to Arduino PIN 13
+- - - M0 to Arduino PIN 11
+- - - M1 to Arduino PIN 12
+- - - CSN to Arduino PIN 8
+- - - CE to Arduino PIN 7
+- - Joysticks:
+- - - Joysticks GND to Arduino GND
+- - - Joysticks +5V to Arduino 5V
+- - - Left Joystick VRX to Arduino PIN A2 (A for analog PIN)
+- - - Left Joystick VRY to Arduino PIN A3
+- - - Left Joystick SW to Arduino PIN 3
+- - - Right Joystick VRX to Arduino PIN A0
+- - - Right Joystick VRY to Arduino PIN A1
+- - - Right Joystick SW to Arduino PIN 4
+
