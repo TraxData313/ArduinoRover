@@ -8,6 +8,8 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
 </blockquote>
 
+# Video:
+- https://www.youtube.com/watch?v=ml7O4jkn1Jc&list=PLNsnBmVpuum4KI6UUOaWc9fDglg-BjKYW
 
 # ArduinoRover
 Arduino Rover and Joystick
@@ -16,7 +18,6 @@ Arduino Rover and Joystick
 - The rover will scan ahead, and if there is an obstacle in less than 8 cm it will stop (and beep). You can still force-move by pressing the left joystick button and moving forward
 - The right joystick controls the camera
 - Pressing the on right joystick button will auto-center the camera
-- Videos: https://www.youtube.com/watch?v=ml7O4jkn1Jc&list=PLNsnBmVpuum4KI6UUOaWc9fDglg-BjKYW
 - Check the Parts list for the needed parts
 - Check the "Connecting the parts" to assemble
 - Upload the code to the Arduinos from the "RoverCode.txt" and the "TransmitterCode.txt" files
