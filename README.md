@@ -1,3 +1,9 @@
+<br><br>
+<b>For assistance contact antongeorgiev313@gmail.com</b>
+- I'm gratefull for any feedback!
+- Have fun with this project and don't forget to send me a video when you complete it!
+<br><br>
+
 <p><em>Disclaimer:</em></p>
 <blockquote>
 <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
@@ -8,7 +14,7 @@ IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN
 CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.</p>
 </blockquote>
 
-# Video:
+# Videos:
 - https://www.youtube.com/watch?v=ml7O4jkn1Jc&list=PLNsnBmVpuum4KI6UUOaWc9fDglg-BjKYW
 
 # ArduinoRover
@@ -105,6 +111,3 @@ Arduino Rover and Joystick
 - - - Right Joystick VRX -> Arduino PIN A0
 - - - Right Joystick VRY -> Arduino PIN A1
 - - - Right Joystick SW -> Arduino PIN 4
-
-
-- Contact = antongeorgiev313@gmail.com
