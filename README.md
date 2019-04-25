@@ -103,7 +103,7 @@ Arduino Rover and Joystick
 - - - Right Joystick SW -> Arduino PIN 4
 
 <br><br><br>
-- Not sure if I need to add this or if it ever be read, but here it it:
+- Not sure if I need to add this or if it ever be red, but here it it:
 <p><em>Disclaimer:</em></p>
 <blockquote>
 <p>THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
